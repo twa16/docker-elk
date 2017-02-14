@@ -6,17 +6,24 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - ./elasticsearch/esdata:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
     networks:
       - docker_elk
   logstash:
     build: logstash/
-    command: -f /etc/logstash/conf.d/
+    command: -w 2 -f /etc/logstash/conf.d/
     volumes:
-      - ./logstash/config:/etc/logstash/conf.d
+      - ./logstash/config:/etc/logstash
     ports:
       - "5000:5000"
+      - "5001:5001"
+      - "5001:5001/udp"
+      - "5514:5514/udp"
+      - "5515:5515/udp"
+      - "5516:5516/udp"
     networks:
       - docker_elk
     depends_on:
